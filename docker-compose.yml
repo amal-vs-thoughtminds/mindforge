@@ -1,0 +1,53 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-mindforge}
+      POSTGRES_USER: ${DB_USER:-mindforge}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-mindforge}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT_HOST:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-mindforge}
+      DB_USER: ${DB_USER:-mindforge}
+      DB_PASSWORD: ${DB_PASSWORD:-mindforge}
+      MIN_TEAM_SIZE: ${MIN_TEAM_SIZE:-2}
+      MAX_TEAM_SIZE: ${MAX_TEAM_SIZE:-4}
+      REGISTRATION_DEADLINE: ${REGISTRATION_DEADLINE:-2026-12-10T23:59:59+05:30}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:4000/api/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  pgdata:
