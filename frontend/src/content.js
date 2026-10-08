@@ -12,32 +12,11 @@ export const EVENT = {
   venue: 'ThoughtMinds',
 };
 
-// Prize money is hidden until announced: set `amount` (e.g. '₹1,00,000') to reveal it.
-export const PRIZES = [
-  {
-    place: 2,
-    label: '2nd Prize',
-    amount: null,
-    perks: ['Silver trophy & certificates', 'Mentorship with ThoughtMinds AI leads', 'Swag kit for every member'],
-  },
-  {
-    place: 1,
-    label: '1st Prize',
-    amount: null,
-    perks: [
-      'Champion trophy & certificates',
-      'Fast-track interview / incubation pitch',
-      'Featured on ThoughtMinds channels',
-      'Premium swag for every member',
-    ],
-  },
-  {
-    place: 3,
-    label: '3rd Prize',
-    amount: null,
-    perks: ['Bronze trophy & certificates', 'Swag kit for every member'],
-  },
-];
+// The prize pool shows as "Revealing soon" until announced: set `amount` (e.g. '₹1,75,000') to reveal it.
+export const PRIZE_POOL = {
+  amount: null,
+  teaser: 'The top teams take home the rewards. The full prize pool will be announced soon. Register now so you are in the running.',
+};
 
 export const TRACKS = [
   { name: 'GenAI & Agents', desc: 'LLM apps, copilots and autonomous agents that get real work done.' },

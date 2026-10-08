@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { EVENT, PRIZES, TRACKS, TIMELINE, RULES, FAQ } from './content';
+import { EVENT, PRIZE_POOL, TRACKS, TIMELINE, RULES, FAQ } from './content';
 import RegisterForm from './components/RegisterForm.jsx';
 import { api } from './api';
 import { Link, usePath } from './router.jsx';
@@ -91,41 +91,41 @@ function Hero({ stats }) {
   );
 }
 
-function Prizes() {
+function Trophy() {
   return (
-    <section className="section dark" id="prizes">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z" />
+      <path d="M17 5h3v2a4 4 0 0 1-4 4M7 5H4v2a4 4 0 0 0 4 4" />
+    </svg>
+  );
+}
+
+function Prizes() {
+  const revealed = Boolean(PRIZE_POOL.amount);
+  return (
+    <section className="section dark prizes" id="prizes">
       <div className="container">
-        <p className="eyebrow">Rewards</p>
-        <h2>Rewards for the top three</h2>
-        {PRIZES.some((p) => !p.amount) && (
-          <p className="reveal-note">
-            <span className="pulse-dot" aria-hidden /> Prize money will be revealed soon. Stay tuned!
-          </p>
-        )}
-        <div className="podium">
-          {PRIZES.map((p) => (
-            <article key={p.place} className={`prize prize-${p.place}`}>
-              <div className="medal">{p.place}</div>
-              <h3>{p.label}</h3>
-              {p.amount ? (
-                <p className="amount">{p.amount}</p>
-              ) : (
-                <div className="amount-hidden">
-                  <p className="amount" aria-hidden>
-                    ₹ ?,??,???
-                  </p>
-                  <span className="soon-badge">Revealing soon</span>
-                </div>
-              )}
-              <ul>
-                {p.perks.map((perk) => (
-                  <li key={perk}>{perk}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
+        <div className="pool">
+          <div className="pool-icon">
+            <Trophy />
+          </div>
+          <p className="eyebrow">Rewards</p>
+          <h2 className="pool-title">Total prize pool</h2>
+          {revealed ? (
+            <p className="pool-amount">{PRIZE_POOL.amount}</p>
+          ) : (
+            <>
+              <p className="pool-amount masked" aria-label="Prize pool to be announced">
+                <span aria-hidden>₹ ?,??,???</span>
+              </p>
+              <span className="pool-badge">
+                <span className="pulse-dot" aria-hidden /> Revealing soon
+              </span>
+            </>
+          )}
+          <p className="pool-sub">{PRIZE_POOL.teaser}</p>
+          <Link to="/#register" className="btn btn-accent">Register now</Link>
         </div>
-        <p className="note">Every participant who submits a project receives a certificate of participation.</p>
       </div>
     </section>
   );
